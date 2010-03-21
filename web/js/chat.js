@@ -1,9 +1,10 @@
-var Chat=Class.create({initialize:function(){this.updateInterval=5;this.updateMemberListInterval=60;this.heartbeatInterval=30;this.url={};this.updateTimer=null;this.updateMemberListTimer=null;this.heartbeatTimer=null;this.lastID=0;var html='<dt>'
+
+var Chat=Class.create({initialize:function(){this.updateInterval=30;this.updateMemberListInterval=210;this.heartbeatInterval=120;this.url={};this.updateTimer=null;this.updateMemberListTimer=null;this.heartbeatTimer=null;this.lastID=0;var html='<dt>'
 +'<span class="number">#{number}</span>: '
 +'<a href="#{member_url}" target="_blank">#{member_name}</a> '
 +'#{created_at}'
 +'</dt>'
-+'<dd class="#{command}">#{body}</dd>';this.contentTemplate=new Template(html);Event.observe(window,'load',this.onLoad.bind(this));},onLoad:function(evt){this.checkLastID();this.scroll($('chatview'));Event.observe('chat_content','submit',this.onSubmit.bind(this));Event.observe('restartLink','click',this.onRestartLinkClick.bind(this));this.timerStart();},onSubmit:function(evt){if($F('chat_content_body')!=''){this.post(Form.serialize('chat_content',true));}
++'<dd class="#{command}">#{body}</dd>';this.contentTemplate=new Template(html);Event.observe(window,'load',this.onLoad.bind(this));},onLoad:function(evt){this.checkLastID();this.scroll($('chatview'));Event.observe('chat_content','submit',this.onSubmit.bind(this));Event.observe('restartLink','click',this.onRestartLinkClick.bind(this));this.updateMemberList();this.timerStart();},onSubmit:function(evt){if($F('chat_content_body')!=''){this.post(Form.serialize('chat_content',true));}
 else{this.update();}
 Event.stop(evt);},onRestartLinkClick:function(evt){this.timerStart();Event.stop(evt);},checkLastID:function(){var num=$('chatview').getElementsByClassName('number');if(num.length==0)return;this.lastID=parseInt(num[num.length-1].innerHTML);},scroll:function(obj){obj.scrollTop=999999;},chatviewUpdated:function(response){var json=response.responseJSON;if(!json||json.length==0){return;}
 var html='';json.each(function(content){if(content.number<=this.lastID){return;}

@@ -1,9 +1,9 @@
 var Chat = Class.create({
   initialize: function () {
     // interval
-    this.updateInterval = 5;
-    this.updateMemberListInterval = 60;
-    this.heartbeatInterval = 30;
+    this.updateInterval = 30;
+    this.updateMemberListInterval = 210;
+    this.heartbeatInterval = 120;
 
     this.url = {};
     this.updateTimer = null;
@@ -30,6 +30,7 @@ var Chat = Class.create({
     Event.observe('chat_content', 'submit', this.onSubmit.bind(this));
     Event.observe('restartLink', 'click', this.onRestartLinkClick.bind(this));
 
+    this.updateMemberList();
     this.timerStart();
   },
 
