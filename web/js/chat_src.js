@@ -36,11 +36,11 @@ var Chat = Class.create({
 
   onSubmit: function (evt) {
     if ($F('chat_content_body') != '') {
-      this.post(Form.serialize('chat_content', true));
+      var param = Form.serialize('chat_content', true);
+      $('chat_content_body').setValue('');
+      this.post(param);
     }
-    else {
-      this.update();
-    }
+
     Event.stop(evt);
   },
 
@@ -123,7 +123,6 @@ var Chat = Class.create({
       insertion: Insertion.Bottom,
       onSuccess: function (response) {
         this.chatviewUpdated(response);
-        $('chat_content_body').setValue('');
       }.bind(this),
     });
   },
