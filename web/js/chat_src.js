@@ -1,11 +1,16 @@
 var Chat = Class.create({
-  initialize: function () {
-    // interval
-    this.updateInterval = 5;
-    this.updateMemberListInterval = 60;
-    this.heartbeatInterval = 30;
 
-    this.url = {};
+  config: {
+    updateInterval: 5,
+    updateMemberListInterval: 60,
+    heartbeatInterval: 30,
+    url: {}
+  },
+
+  initialize: function (config) {
+    config = config || {};
+    this.config = $H(this.config).merge($H(config)).toObject();
+
     this.updateTimer = null;
     this.updateMemberListTimer = null;
     this.heartbeatTimer = null;
@@ -85,7 +90,7 @@ var Chat = Class.create({
   },
 
   update: function () {
-    new Ajax.Request(this.url['show'], {
+    new Ajax.Request(this.config.url['show'], {
       method: 'get',
       parameters: { view: 'chat', last: this.lastID },
       insertion: Insertion.Bottom,
@@ -99,11 +104,11 @@ var Chat = Class.create({
   },
 
   startUpdateTimer: function () {
-    this.updateTimer = setTimeout(this.update.bind(this), this.updateInterval * 1000);
+    this.updateTimer = setTimeout(this.update.bind(this), this.config['updateInterval'] * 1000);
   },
 
   updateMemberList: function () {
-    new Ajax.Updater({success: 'memberlist'}, this.url['show'], {
+    new Ajax.Updater({success: 'memberlist'}, this.config.url['show'], {
       method: 'get',
       parameters: { view: 'member' },
       onSuccess: this.startUpdateMemberListTimer.bind(this),
@@ -113,12 +118,12 @@ var Chat = Class.create({
   },
 
   startUpdateMemberListTimer: function () {
-    this.updateMemberListTimer = setTimeout(this.updateMemberList.bind(this), this.updateMemberListInterval * 1000);
+    this.updateMemberListTimer = setTimeout(this.updateMemberList.bind(this), this.config['updateMemberListInterval'] * 1000);
   },
 
   post: function (param) {
     param['last'] = this.lastID;
-    new Ajax.Request(this.url['post'], {
+    new Ajax.Request(this.config.url['post'], {
       method: 'post',
       parameters: param,
       insertion: Insertion.Bottom,
@@ -129,7 +134,7 @@ var Chat = Class.create({
   },
 
   heartbeat: function () {
-    new Ajax.Request(this.url['heartbeat'], {
+    new Ajax.Request(this.config.url['heartbeat'], {
       method: 'post',
       onSuccess: this.startHeartbeatTimer.bind(this),
       onFailure: this.timerStop.bind(this),
@@ -138,7 +143,7 @@ var Chat = Class.create({
   },
 
   startHeartbeatTimer: function () {
-    this.heartbeatTimer = setTimeout(this.heartbeat.bind(this), this.heartbeatInterval * 1000);
+    this.heartbeatTimer = setTimeout(this.heartbeat.bind(this), this.config['heartbeatInterval'] * 1000);
   },
 
   timerStop: function () {
@@ -156,7 +161,5 @@ var Chat = Class.create({
     this.startUpdateTimer();
     this.startUpdateMemberListTimer();
     this.startHeartbeatTimer();
-  },
+  }
 });
-
-var op_chat = new Chat();
