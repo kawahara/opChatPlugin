@@ -4,7 +4,9 @@ var Chat = Class.create({
     updateInterval: 5,
     updateMemberListInterval: 60,
     heartbeatInterval: 30,
-    url: {}
+
+    url: {},
+    sounds: {}
   },
 
   initialize: function (config) {
@@ -64,6 +66,14 @@ var Chat = Class.create({
     obj.scrollTop = 999999;
   },
 
+  playSound: function (name) {
+    if ($('is_enable_sound').checked) {
+      if (this.config.sounds[name]) {
+        Sound.play(this.config.sounds[name], {replace: true});
+      }
+    }
+  },
+
   chatviewUpdated: function (response) {
     var json = response.responseJSON;
 
@@ -72,8 +82,10 @@ var Chat = Class.create({
     }
 
     var html = '';
+    var maxLevel = 0;
     json.each(function (content) {
       content.number = parseInt(content.number);
+      content.level = parseInt(content.level);
 
       // 受信済みのIDを二度受信してしまった場合は破棄する
       if (content.number <= this.lastID) {
@@ -81,8 +93,22 @@ var Chat = Class.create({
       }
 
       this.lastID = content.number;
+      if (maxLevel < content.level) {
+        maxLevel = content.level;
+      }
+
       html += this.contentTemplate.evaluate(content);
     }, this);
+
+    if (maxLevel >= 5) {
+      if (maxLevel == 9 && this.config.sounds['in']) {
+        this.playSound('in');
+      } else if (maxLevel == 10 && this.config.sounds['out']) {
+        this.playSound('out');
+      } else {
+        this.playSound('notice');
+      }
+    }
 
     $('chatview').innerHTML += html;
 
