@@ -9,17 +9,12 @@
 <?php endif; ?>
 <?php echo link_to('[ログアウト]', '@chatroom_logout?id='.$room->id) ?>
 </div>
-<div>作成者: <?php echo link_to($room->getMember()->name, '@obj_member_profile?id='.$room->member_id); ?></div>
+<div>作成者: <?php echo link_to($room->getMember()->name, '@obj_member_profile?id='.$room->member_id, array('popup' => true)) ?></div>
 
 <table id="chat"><tr>
 <td>
 <dl id="chatview">
 <?php include_partial('chatview', array('chatlist' => $chatlist)) ?>
-
-<dd id="restart" style="display: none">
-<a href="javascript:void(0)" id="restartLink">再接続する</a>
-</dd>
-
 </dl>
 </td>
 <td style="width: 150px">

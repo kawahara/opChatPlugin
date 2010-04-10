@@ -27,6 +27,11 @@ var Chat = Class.create({
              + '<dd class="#{command}">#{body}</dd>';
     this.contentTemplate = new Template(html);
 
+    html = '<dd id="restart">'
+         + '<a href="javascript:void(0)" id="restartLink">再接続する</a>'
+         + '</dd>';
+    this.restartLink = html;
+
     Event.observe(window, 'load', this.onLoad.bind(this));
   },
 
@@ -35,7 +40,6 @@ var Chat = Class.create({
     this.scroll($('chatview'));
 
     Event.observe('chat_content', 'submit', this.onSubmit.bind(this));
-    Event.observe('restartLink', 'click', this.onRestartLinkClick.bind(this));
 
     this.timerStart();
   },
@@ -185,12 +189,16 @@ var Chat = Class.create({
     clearTimeout(this.updateMemberListTimer);
     clearTimeout(this.heartbeatTimer);
 
-    $('restart').show();
+    $('chatview').innerHTML += this.restartLink;
+    Event.observe('restartLink', 'click', this.onRestartLinkClick.bind(this));
     this.scroll($('chatview'));
   },
 
   timerStart: function () {
-    $('restart').hide();
+    try {
+      $('restart').remove();
+    }
+    catch (e) { }
 
     this.startUpdateTimer();
     this.startUpdateMemberListTimer();
