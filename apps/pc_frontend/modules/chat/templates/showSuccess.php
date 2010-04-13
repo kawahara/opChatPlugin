@@ -4,6 +4,7 @@
 <?php slot('chatroom_body'); ?>
 
 <div style="float: right">
+<?php echo link_to('[過去ログ]', '@chatroom_log?id='.$room->id, array('popup' => true)) ?>&nbsp;
 <?php if ($room->isEditable($sf_user->getMemberId())): ?>
 <?php echo link_to('[編集]', '@chatroom_edit?id='.$room->id) ?>&nbsp;
 <?php endif; ?>
@@ -58,4 +59,3 @@ url: {
 sounds: <?php echo json_encode(op_chat_get_sounds()) ?>
 });
 <?php echo end_javascript_tag() ?>
-
